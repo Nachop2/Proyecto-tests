@@ -1,7 +1,4 @@
 models:
-  User:
-      relationships:
-          hasMany: Test
   Test:
     name: string
     test_src: string
