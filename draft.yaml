@@ -1,0 +1,13 @@
+models:
+  User:
+      relationships:
+          hasMany: Test
+  Test:
+    name: string
+    test_src: string
+    user_id: id
+    relationships:
+        belongsTo: User
+
+controllers:
+  # ...

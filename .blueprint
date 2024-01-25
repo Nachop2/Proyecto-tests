@@ -1,0 +1,2 @@
+models:
+    User: { name: string, email: string, email_verified_at: 'datetime nullable', github_id: 'string nullable', github_token: 'string nullable', github_refresh_token: 'string nullable', password: 'string nullable', remember_token: 'string:100 nullable' }
