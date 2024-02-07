@@ -11,10 +11,10 @@ class TestController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'test_file' => 'required|file', // Assuming the test is uploaded as a file
+            'test_file' => 'required|file',
         ]);
 
-        $user = Auth::user(); // Get the authenticated user
+        $user = Auth::user(); 
         $fileName = $request->file('test_file')->getClientOriginalName();
         $path = $request->file('test_file')->store('tests', 'public'); // Stores in storage/app/public/tests
 
@@ -25,5 +25,16 @@ class TestController extends Controller
         $test->save();
 
         return response()->json(['message' => 'Test uploaded successfully', 'test' => $test]);
+    }
+
+    public function getUserTests()
+    {
+        $user = Auth::user();
+
+        // Retrieve the test names associated with the user
+        $tests = Test::where('user_id', $user->id)->pluck('name');
+
+        // Return the test names as JSON response
+        return response()->json(['tests' => $tests], 200);
     }
 }
