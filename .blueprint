@@ -1,2 +1,7 @@
+created:
+    - database/factories/TestFactory.php
+    - database/migrations/2024_02_07_114829_create_tests_table.php
+    - app/Models/Test.php
 models:
     User: { name: string, email: string, email_verified_at: 'datetime nullable', github_id: 'string nullable', github_token: 'string nullable', github_refresh_token: 'string nullable', password: 'string nullable', remember_token: 'string:100 nullable' }
+    Test: { name: string, test_src: string, user_id: id, relationships: { belongsTo: User } }
