@@ -14,7 +14,7 @@ class TestController extends Controller
             'test_file' => 'required|file', // Assuming the test is uploaded as a file
         ]);
 
-        return $user = Auth::user(); // Get the authenticated user
+        $user = Auth::user(); // Get the authenticated user
         $fileName = $request->file('test_file')->getClientOriginalName();
         $path = $request->file('test_file')->store('tests', 'public'); // Stores in storage/app/public/tests
 
