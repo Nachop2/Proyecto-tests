@@ -30,10 +30,15 @@ Route::middleware('auth:sanctum')->get('/download-test/{id}', function ($id) {
 
     // Retrieve the file using the stored file path
     $filePath = $test->test_src;
-    $fileContents = Storage::get($filePath);
+    // $fullPath = Storage::path($filePath);
+    $laCosa = Storage::json(storage_path($filePath));
 
     // Return the file as a response
-    return response($fileContents, 200)->header('Content-Type', 'application/json');
+    $path = public_path('test');
+    $files = File::allFiles($path);
+
+    return response(storage_path($files), 200)->header('Content-Type', 'application/json');
+    //return response(200)->attach();
 });
 
 Route::middleware('auth:sanctum')->get('/user/tests', [TestController::class, 'getUserTests']);
