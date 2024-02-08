@@ -28,17 +28,16 @@ Route::middleware('auth:sanctum')->get('/download-test/{id}', function ($id) {
     // Retrieve the test record from the database
     $test = Test::findOrFail($id);
 
-    // Retrieve the file using the stored file path
+    // Retrieve the file path from the test record
     $filePath = $test->test_src;
-    // $fullPath = Storage::path($filePath);
-    $laCosa = Storage::json(storage_path($filePath));
 
-    // Return the file as a response
-    $path = public_path('test');
-    $files = File::allFiles($path);
+    // Read the JSON content from the file
+    $fileContents = Storage::disk('public')->get($filePath);
 
-    return response(storage_path($files), 200)->header('Content-Type', 'application/json');
-    //return response(200)->attach();
+    // Return the file content as a response with appropriate headers
+    return response($fileContents, 200)
+        ->header('Content-Type', 'application/json')
+        ->header('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"');
 });
 
 Route::middleware('auth:sanctum')->get('/user/tests', [TestController::class, 'getUserTests']);
