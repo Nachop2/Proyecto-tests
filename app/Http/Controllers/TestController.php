@@ -32,8 +32,12 @@ class TestController extends Controller
         $user = Auth::user();
 
         // Retrieve the test names associated with the user
-        $tests = Test::where('user_id', $user->id)->pluck('name');
-
+        $tests = Test::where('user_id', $user->id)->get(['id','name'])->map(function($test){
+            return [
+                'id'=>$test->id,
+                'name'=>$test->name,
+            ];
+        });
         // Return the test names as JSON response
         return response()->json(['tests' => $tests], 200);
     }
