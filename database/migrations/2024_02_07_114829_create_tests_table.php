@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->enum('visibility',['public','private'])->default('private');
+            $table->enum('visibility',['public','friend','private'])->default('private');
 
             $table->string('test_src');
             $table->foreignId('user_id');
