@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tests', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description')->nullable();
-            $table->enum('visibility',['public','private'])->default('private');
-
-            $table->string('test_src');
-            $table->foreignId('user_id');
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tests');
+        Schema::dropIfExists('categories');
     }
 };

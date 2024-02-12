@@ -17,6 +17,8 @@ class Test extends Model
      */
     protected $fillable = [
         'name',
+        'description',
+        'visibility',
         'test_src',
         'user_id',
     ];
@@ -34,5 +36,9 @@ class Test extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
     }
 }
