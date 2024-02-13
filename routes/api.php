@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\CategoryController;
 use App\Models\Test;
 use Illuminate\Support\Facades\Storage;
 /*
@@ -42,3 +43,5 @@ Route::middleware('auth:sanctum')->get('/download-test/{id}', function ($id) {
 
 Route::middleware('auth:sanctum')->get('/user/tests', [TestController::class, 'getUserTests']);
 Route::middleware('auth:sanctum')->get('/friend-tests', [TestController::class, 'getFriendTests']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
