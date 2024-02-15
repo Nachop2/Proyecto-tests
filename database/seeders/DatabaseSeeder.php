@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $category = new Category();
+        $category->name = "Uncategorized";
+        $category->save();
+        $category = new Category();
         $category->name = "English";
         $category->save();
         $category = new Category();
