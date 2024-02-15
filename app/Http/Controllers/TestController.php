@@ -14,6 +14,7 @@ class TestController extends Controller
         $request->validate([
             'name' => 'required|string',
             'test_file' => 'required|file',
+            'category_ids' => 'required|array',
         ]);
 
         $user = Auth::user();
@@ -25,6 +26,8 @@ class TestController extends Controller
         $test->test_src = $path; // Save the path
         $test->user_id = $user->id;
         $test->save();
+        $test->categories()->attach($request['category_ids']);
+
 
         return response()->json(['message' => 'Test uploaded successfully', 'test' => $test]);
     }
