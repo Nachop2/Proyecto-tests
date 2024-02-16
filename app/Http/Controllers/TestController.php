@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Test;
+use Illuminate\Support\Facades\Storage;
 
 class TestController extends Controller
 {
@@ -32,6 +33,48 @@ class TestController extends Controller
 
 
         return response()->json(['message' => 'Test uploaded successfully', 'test' => $test]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'visibility' => 'required|string',
+            'test_file' => 'nullable|file',
+            'category_ids' => 'required|array',
+        ]);
+
+        $test = Test::findOrFail($id);
+
+        // Check if user owns the test
+        if ($test->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // If a new test file is uploaded
+        if ($request->hasFile('test_file')) {
+            // Delete the old file if it exists
+            if ($test->test_src && Storage::disk('public')->exists($test->test_src)) {
+                Storage::disk('public')->delete($test->test_src);
+            }
+
+            // Store the new file and update the path
+            $fileName = $request->file('test_file')->getClientOriginalName();
+            $path = $request->file('test_file')->store('tests', 'public');
+            $test->test_src = $path; // Update the path
+        }
+
+        // Update other fields
+        $test->name = $request->name;
+        $test->visibility = $request->visibility;
+        $test->save();
+
+        // Update categories if provided
+        if ($request->has('category_ids')) {
+            $test->categories()->sync($request['category_ids']);
+        }
+
+        return response()->json(['message' => 'Test updated successfully', 'test' => $test]);
     }
 
     public function getUserTests()
