@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\CategoryController;
 use App\Models\Test;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,24 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->get('/download-test/{id}', function ($id) {
     // Retrieve the test record from the database
+    $user = Auth::user();
     $test = Test::findOrFail($id);
+
+    switch ($test->visibility) {
+        case 'private':
+            if ($test->user_id !== $user->id) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+            break;
+
+        case 'friends':
+            $isFriend = $user->friends()->where('id', $test->user_id)->exists() ||
+                $user->friendOf()->where('id', $test->user_id)->exists();
+            if (!$isFriend) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+            break;
+    }
 
     // Retrieve the file path from the test record
     $filePath = $test->test_src;
