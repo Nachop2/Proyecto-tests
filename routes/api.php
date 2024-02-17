@@ -60,6 +60,8 @@ Route::middleware('auth:sanctum')->get('/download-test/{id}', function ($id) {
 });
 
 Route::middleware('auth:sanctum')->get('/user/tests', [TestController::class, 'getUserTests']);
+Route::middleware('auth:sanctum')->put('/user/test/{id}', [TestController::class, 'update']);
+Route::middleware('auth:sanctum')->get('/user/test/{id}', [TestController::class, 'getTest']);
+
 Route::middleware('auth:sanctum')->get('/friend-tests', [TestController::class, 'getFriendTests']);
-Route::middleware('auth:sanctum')->put('/test/{id}', [TestController::class, 'update']);
 Route::get('/categories', [CategoryController::class, 'index']);
