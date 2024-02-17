@@ -15,6 +15,7 @@ class TestController extends Controller
         $request->validate([
             'name' => 'required|string',
             'visibility' => 'required|string',
+            'description' => 'nullable|string',
             'test_file' => 'required|file',
             'category_ids' => 'required|array',
         ]);
@@ -26,6 +27,9 @@ class TestController extends Controller
         $test = new Test();
         $test->name = $request->name;
         $test->visibility = $request->visibility;
+        if($request->description){
+            $test->description = $request->description;
+        }
         $test->test_src = $path; // Save the path
         $test->user_id = $user->id;
         $test->save();
