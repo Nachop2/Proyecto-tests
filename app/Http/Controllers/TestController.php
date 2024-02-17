@@ -27,7 +27,7 @@ class TestController extends Controller
         $test = new Test();
         $test->name = $request->name;
         $test->visibility = $request->visibility;
-        if($request->description){
+        if ($request->description) {
             $test->description = $request->description;
         }
         $test->test_src = $path; // Save the path
@@ -97,13 +97,13 @@ class TestController extends Controller
         // Read the JSON content from the file
         $fileContents = Storage::disk('public')->get($filePath);
 
-        $questions = json_decode($fileContents, true); // assuming you want the contents as an array
+        $questions = json_decode($fileContents, true);
 
         // Construct the response data
         $responseData = [
             "test_id" => $test->id,
             "name" => $test->name,
-            "category_names" => $test->categories->pluck('name'), // Assuming categories relationship exists and you want the names
+            "category_names" => $test->categories->pluck('name'),
             "visibility" => $test->visibility,
             "description" => $test->description,
             "questions" => $questions,
@@ -143,5 +143,25 @@ class TestController extends Controller
         });
 
         return response()->json($tests);
+    }
+
+    public function getPublicTests()
+    {
+        $user = Auth::user();
+
+        // Use pagination instead of getting all results
+        $tests = Test::where('visibility', 'public')
+            ->with('categories')
+            ->paginate(10, ['id', 'name']) // Paginate results, 10 per page
+            ->through(function ($test) {
+                return [
+                    'id' => $test->id,
+                    'name' => $test->name,
+                    'category_names' => $test->categories->pluck('name')
+                ];
+            });
+
+        // Return the paginated tests as JSON response
+        return response()->json($tests, 200); // $tests already contains pagination info
     }
 }
