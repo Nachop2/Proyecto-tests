@@ -77,6 +77,40 @@ class TestController extends Controller
         return response()->json(['message' => 'Test updated successfully', 'test' => $test]);
     }
 
+    public function getTest(Request $request, $id)
+    {
+        // Retrieve the test record from the database
+        $user = Auth::user();
+        $test = Test::findOrFail($id);
+
+        if ($test->user_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Retrieve the file path from the test record
+        $filePath = $test->test_src;
+
+        // Read the JSON content from the file
+        $fileContents = Storage::disk('public')->get($filePath);
+
+        $questions = json_decode($fileContents, true); // assuming you want the contents as an array
+
+        // Construct the response data
+        $responseData = [
+            "test_id" => $test->id,
+            "name" => $test->name,
+            "category_names" => $test->categories->pluck('name'), // Assuming categories relationship exists and you want the names
+            "visibility" => $test->visibility,
+            "description" => $test->description,
+            "questions" => $questions,
+        ];
+
+        // Return the response with appropriate headers
+        return response()->json($responseData, 200)
+            ->header('Content-Type', 'application/json')
+            ->header('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"');
+    }
+
     public function getUserTests()
     {
         $user = Auth::user();
