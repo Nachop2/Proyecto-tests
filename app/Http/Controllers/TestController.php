@@ -152,11 +152,12 @@ class TestController extends Controller
         // Use pagination instead of getting all results
         $tests = Test::where('visibility', 'public')
             ->with('categories')
-            ->paginate(10, ['id', 'name']) // Paginate results, 10 per page
+            ->paginate(10, ['id', 'name','description']) // Paginate results, 10 per page
             ->through(function ($test) {
                 return [
                     'id' => $test->id,
                     'name' => $test->name,
+                    'description' => $test->description,
                     'category_names' => $test->categories->pluck('name')
                 ];
             });
