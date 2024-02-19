@@ -44,7 +44,8 @@ class TestController extends Controller
         $request->validate([
             'name' => 'required|string',
             'visibility' => 'required|string',
-            'test_file' => 'nullable|file',
+            'description' => 'nullable|string',
+            'test_file' => 'required|file',
             'category_ids' => 'required|array',
         ]);
 
@@ -71,12 +72,12 @@ class TestController extends Controller
         // Update other fields
         $test->name = $request->name;
         $test->visibility = $request->visibility;
+        if ($request->description) {
+            $test->description = $request->description;
+        }
         $test->save();
 
-        // Update categories if provided
-        if ($request->has('category_ids')) {
-            $test->categories()->sync($request['category_ids']);
-        }
+        $test->categories()->sync($request['category_ids']);
 
         return response()->json(['message' => 'Test updated successfully', 'test' => $test]);
     }
@@ -152,7 +153,7 @@ class TestController extends Controller
         // Use pagination instead of getting all results
         $tests = Test::where('visibility', 'public')
             ->with('categories')
-            ->paginate(10, ['id', 'name','description']) // Paginate results, 10 per page
+            ->paginate(10, ['id', 'name', 'description']) // Paginate results, 10 per page
             ->through(function ($test) {
                 return [
                     'id' => $test->id,
