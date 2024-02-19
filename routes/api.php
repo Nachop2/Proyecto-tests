@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->get('/download-test/{id}', function ($id) {
 
 Route::middleware('auth:sanctum')->get('/user/tests', [TestController::class, 'getUserTests']);
 Route::middleware('auth:sanctum')->get('/friend-tests', [TestController::class, 'getFriendTests']);
-Route::middleware('auth:sanctum')->get('/public-tests', [TestController::class, 'getPublicTests']);
+Route::get('/public-tests', [TestController::class, 'getPublicTests']);
 
 Route::middleware('auth:sanctum')->get('/user/test/{id}', [TestController::class, 'getTest']);
 Route::middleware('auth:sanctum')->put('/user/test/{id}', [TestController::class, 'update']);
