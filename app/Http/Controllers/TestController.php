@@ -166,4 +166,38 @@ class TestController extends Controller
         // Return the paginated tests as JSON response
         return response()->json($tests, 200); // $tests already contains pagination info
     }
+
+    public function playTest(Request $request, $id)
+    {
+        // Retrieve the test record from the database
+        $user = Auth::user();
+        $test = Test::findOrFail($id);
+
+        // add private/friend protection
+
+        // Retrieve the file path from the test record
+        $filePath = $test->test_src;
+
+        // Read the JSON content from the file
+        $fileContents = Storage::disk('public')->get($filePath);
+
+        $questions = json_decode($fileContents, true);
+
+        // Construct the response data
+        $responseData = [
+            "test_id" => $test->id,
+            "name" => $test->name,
+            "category_names" => $test->categories->pluck('name'),
+            "visibility" => $test->visibility,
+            "description" => $test->description,
+            "created_at" => $test->created_at,
+            "updated_at" => $test->updated_at,
+            "questions" => $questions,
+        ];
+
+        // Return the response with appropriate headers
+        return response()->json($responseData, 200)
+            ->header('Content-Type', 'application/json')
+            ->header('Content-Disposition', 'attachment; filename="' . basename($filePath) . '"');
+    }
 }
