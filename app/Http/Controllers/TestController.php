@@ -172,7 +172,7 @@ class TestController extends Controller
         // Retrieve the test record from the database
         $user = Auth::user();
         $test = Test::findOrFail($id);
-
+        $author = User::find($test->user_id);
         // add private/friend protection
 
         // Retrieve the file path from the test record
@@ -193,6 +193,7 @@ class TestController extends Controller
             "created_at" => $test->created_at,
             "updated_at" => $test->updated_at,
             "questions" => $questions,
+            "author" => $author->name
         ];
 
         // Return the response with appropriate headers
