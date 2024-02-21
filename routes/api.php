@@ -66,5 +66,6 @@ Route::get('/play/{id}', [TestController::class, 'playTest']);
 
 Route::middleware('auth:sanctum')->get('/user/test/{id}', [TestController::class, 'getTest']);
 Route::middleware('auth:sanctum')->put('/user/test/{id}', [TestController::class, 'update']);
+Route::middleware('auth:sanctum')->delete('/user/test/{id}', [TestController::class, 'deleteTest']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
