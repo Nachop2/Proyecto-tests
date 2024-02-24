@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Test;
 use Illuminate\Support\Facades\Storage;
+use App\Models\TestHistory;
 
 class TestController extends Controller
 {
@@ -167,14 +168,35 @@ class TestController extends Controller
         return response()->json($tests, 200); // $tests already contains pagination info
     }
 
-    public function playTest(Request $request, $id)
+    public function playTest(Test $test)
     {
         // Retrieve the test record from the database
-        $user = Auth::user();
-        $test = Test::findOrFail($id);
-        $author = User::find($test->user_id);
+        $author = $test->user;
         // add private/friend protection
 
+        if (Auth::check()) {
+            // The user is logged in
+            $userId = Auth::id();
+
+            // Check and manage the test play history limit logic here for the logged-in user
+            $playCount = TestHistory::where('user_id', $userId)->count();
+
+            // Maximum number of test plays to keep
+            $limit = 10;
+            if ($playCount >= $limit) {
+                // Find the oldest played test and delete it
+                TestHistory::where('user_id', $userId)
+                    ->oldest('played_at')
+                    ->limit($playCount - $limit + 1) // In case of multiple plays over the limit
+                    ->delete();
+            }
+            // Record the new test play for the logged-in user
+            TestHistory::create([
+                'user_id' => $userId,
+                'test_id' => $test->id,
+                'played_at' => now(),
+            ]);
+        }
         // Retrieve the file path from the test record
         $filePath = $test->test_src;
 
