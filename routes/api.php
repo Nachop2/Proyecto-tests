@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\TestHistoryController;
 use App\Http\Controllers\CategoryController;
 use App\Models\Test;
 use Illuminate\Support\Facades\Auth;
@@ -68,3 +69,5 @@ Route::middleware('auth:sanctum')->get('/user/test/{id}', [TestController::class
 Route::middleware('auth:sanctum')->put('/user/test/{id}', [TestController::class, 'update']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
+
+Route::middleware('auth:sanctum')->get('/user/test-history', [TestHistoryController::class, 'index']);
