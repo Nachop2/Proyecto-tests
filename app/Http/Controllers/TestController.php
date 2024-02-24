@@ -83,6 +83,20 @@ class TestController extends Controller
         return response()->json(['message' => 'Test updated successfully', 'test' => $test]);
     }
 
+    public function deleteTest(Request $request, $id)
+    {
+        $test = Test::findOrFail($id);
+
+        // Check if user owns the test
+        if ($test->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        Storage::disk('public')->delete($test->test_src);
+        Test::findOrFail($id)->delete();
+
+        return response()->json(['message' => 'Test updated successfully', 'test' => $test]);
+    }
+
     public function getTest(Request $request, $id)
     {
         // Retrieve the test record from the database
