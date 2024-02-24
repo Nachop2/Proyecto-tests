@@ -19,6 +19,7 @@ class TestHistoryController extends Controller
                 return [
                     'name' => $testHistory->test->name,
                     'author' => $testHistory->test->user->name, // Adjust based on your author relationship
+                    'id' => $testHistory->test->id,
                     'category_names' => $testHistory->test->categories->pluck('name'),
                     'played_at' => $testHistory->played_at,
                 ];
