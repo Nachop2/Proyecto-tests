@@ -173,29 +173,33 @@ class TestController extends Controller
         // Retrieve the test record from the database
         $author = $test->user;
         // add private/friend protection
-
         if (Auth::check()) {
             // The user is logged in
             $userId = Auth::id();
 
-            // Check and manage the test play history limit logic here for the logged-in user
-            $playCount = TestHistory::where('user_id', $userId)->count();
+            $existingHistory = TestHistory::where('user_id', $userId)->where('test_id', $test->id)->first();
+            if ($existingHistory) {
+                // Update the existing history entry's played_at timestamp
+                $existingHistory->update(['played_at' => now()]);
+            } else {
+                // Check and manage the test play history limit logic here for the logged-in user
+                $playCount = TestHistory::where('user_id', $userId)->count();
+                $limit = 10; // Maximum number of test plays to keep
+                if ($playCount >= $limit) {
+                    // Find the oldest played test and delete it
+                    TestHistory::where('user_id', $userId)
+                        ->oldest('played_at')
+                        ->limit($playCount - $limit + 1) // In case of multiple plays over the limit
+                        ->delete();
+                }
 
-            // Maximum number of test plays to keep
-            $limit = 10;
-            if ($playCount >= $limit) {
-                // Find the oldest played test and delete it
-                TestHistory::where('user_id', $userId)
-                    ->oldest('played_at')
-                    ->limit($playCount - $limit + 1) // In case of multiple plays over the limit
-                    ->delete();
+                // Record the new test play for the logged-in user
+                TestHistory::create([
+                    'user_id' => $userId,
+                    'test_id' => $test->id,
+                    'played_at' => now(),
+                ]);
             }
-            // Record the new test play for the logged-in user
-            TestHistory::create([
-                'user_id' => $userId,
-                'test_id' => $test->id,
-                'played_at' => now(),
-            ]);
         }
         // Retrieve the file path from the test record
         $filePath = $test->test_src;
