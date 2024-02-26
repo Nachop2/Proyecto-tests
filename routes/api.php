@@ -72,3 +72,4 @@ Route::middleware('auth:sanctum')->delete('/user/test/{id}', [TestController::cl
 Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->get('/user/test-history', [TestHistoryController::class, 'index']);
+Route::middleware('auth:sanctum')->put('/test-histories/{testHistoryId}', [TestHistoryController::class, 'updateMaxScore']);

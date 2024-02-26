@@ -9,7 +9,7 @@ class TestHistory extends Model
 {
     protected $table = 'test_histories';
 
-    protected $fillable = ['user_id', 'test_id', 'played_at'];
+    protected $fillable = ['user_id', 'test_id', 'played_at','max_score',];
 
     public function user()
     {
