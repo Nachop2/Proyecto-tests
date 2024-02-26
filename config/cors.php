@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000','https://quizma-front-end.onrender.com')],
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000','https://kevin.informaticamajada.es')],
 
     'allowed_origins_patterns' => [],
 
