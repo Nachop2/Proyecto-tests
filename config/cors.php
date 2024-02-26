@@ -17,13 +17,13 @@ return [
 
     'paths' => ['api/*','register','sanctum/csrf-cookie','login','reset-password','forgot-password'],
 
-    'allowed_methods' => ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+    'allowed_methods' => ['*'],
 
     'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Origin', 'Authorization', 'Accept', 'Client-Security-Token', 'Accept-Encoding', 'X-Auth-Token', 'X-XSRF-TOKEN', 'X-CSRF-Token'],
+    'allowed_headers' => ['*'],
 
     'exposed_headers' => [],
 
