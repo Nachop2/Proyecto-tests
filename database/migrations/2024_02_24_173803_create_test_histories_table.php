@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('test_id')->constrained()->onDelete('cascade');
             $table->timestamp('played_at');
+            $table->decimal('max_score')->nullable();
             $table->timestamps();
         });
     }
