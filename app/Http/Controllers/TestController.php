@@ -187,12 +187,22 @@ class TestController extends Controller
         // Retrieve the test record from the database
         $author = $test->user;
         // add private/friend protection
+        if ($test->visibility = "private") {
+            if (Auth::check()){
+                $userId = Auth::id();
+                if ($test->user_id != $userId) {
+                    return response()->json(['message' => 'Unauthorized'], 403);
+                }
+            }else{
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+        }
+        
+        
         if (Auth::check()) {
             // The user is logged in
             $userId = Auth::id();
-            if ($test->user_id != $userId && $test->visibility = "private") {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
+            
             $existingHistory = TestHistory::where('user_id', $userId)->where('test_id', $test->id)->first();
             if ($existingHistory) {
                 // Update the existing history entry's played_at timestamp
