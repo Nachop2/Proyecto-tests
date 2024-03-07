@@ -103,7 +103,7 @@ class TestController extends Controller
         $user = Auth::user();
         $test = Test::findOrFail($id);
 
-        if ($test->user_id !== $user->id) {
+        if ($test->user_id != $user->id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
